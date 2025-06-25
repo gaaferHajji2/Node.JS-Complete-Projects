@@ -1,10 +1,10 @@
-// const coinAPI = require('./linkedin-node-databases-main/maxcoin/services/CoinAPI');
+// const coinAPI = require('./Node.JS-With-Multiple-Databases/maxcoin/services/CoinAPI');
 
-const MongoBackend = require('./linkedin-node-databases-main/maxcoin/services/backend/MongoBackend');
+const MongoBackend = require('./Node.JS-With-Multiple-Databases/maxcoin/services/backend/MongoBackend');
 
-const RedisBackend = require('./linkedin-node-databases-main/maxcoin/services/backend/RedisBackend');
+const RedisBackend = require('./Node.JS-With-Multiple-Databases/maxcoin/services/backend/RedisBackend');
 
-const MySQLBackend = require('./linkedin-node-databases-main/maxcoin/services/backend/MySQLBackend');
+const MySQLBackend = require('./Node.JS-With-Multiple-Databases/maxcoin/services/backend/MySQLBackend');
 
 const mongoBackend= new MongoBackend();
 
