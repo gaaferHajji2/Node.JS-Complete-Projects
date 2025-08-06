@@ -1,5 +1,7 @@
 import express, {Request, Response,} from "express"
 
+import db from "./config/database.config";
+
 let app = express()
 
 app.get('/', (req: Request, res: Response) => {
