@@ -2,6 +2,10 @@ import express, {Request, Response,} from "express"
 
 import db from "./config/database.config";
 
+db.sync().then(() => {
+    console.log("Connected to db ok!!")
+})
+
 let app = express()
 
 app.get('/', (req: Request, res: Response) => {
