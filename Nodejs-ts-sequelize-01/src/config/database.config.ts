@@ -10,7 +10,6 @@ var db = new Sequelize("db", process.env.user!, process.env.PASSWORD!, {
     dialect: "postgres",
     port: 5432,
     logging: true,
-    
 })
 
 export default db;

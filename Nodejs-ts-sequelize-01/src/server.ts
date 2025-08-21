@@ -1,4 +1,4 @@
-import express, {Request, Response,} from "express"
+import express, {Request, Response} from "express"
 
 import db from "./config/database.config";
 
@@ -8,13 +8,9 @@ db.sync().then(() => {
 
 let app = express()
 
-app.get('/', (req: Request, res: Response) => {
+app.use(express.json())
 
-    return res.status(200).json({
-        "msg": "The main route, Hello World"
-    })
 
-});
 
 app.use((req: Request, res: Response) => {
     return res.status(200).json({
