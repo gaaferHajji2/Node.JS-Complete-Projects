@@ -6,9 +6,7 @@
     "dev": "ts-node-dev --respawn src/server.ts",
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "init": "sequelize-typescript init",
-    "migrate": "sequelize-ts db:migrate"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
