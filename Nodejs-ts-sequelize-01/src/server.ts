@@ -1,5 +1,7 @@
 import express, {Request, Response} from "express"
 
+import TodoRouter from './routes' 
+
 import db from "./config/database.config";
 
 db.sync().then(() => {
@@ -10,13 +12,23 @@ let app = express()
 
 app.use(express.json())
 
-
+app.use('/api', TodoRouter)
 
 app.use((req: Request, res: Response) => {
     return res.status(200).json({
         "msg": "Server OK"
     });
 })
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  
+});
 
 app.listen(3000, (error) => {
     if(error){
