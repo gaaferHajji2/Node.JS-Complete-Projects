@@ -13,9 +13,10 @@ export class Todo extends Model<TodoObject> {
 
 Todo.init({
     id: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
     },
 
     title: {
