@@ -8,7 +8,6 @@ interface TodoObject {
 }
 
 export class Todo extends Model<TodoObject> {
-
 }
 
 Todo.init({
@@ -18,12 +17,10 @@ Todo.init({
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
     },
-
     title: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-
     completed: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
