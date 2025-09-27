@@ -7,12 +7,12 @@ const router = express.Router()
 
 router.post('/create', async function(req: Request, res: Response) {
 
-    const id = uuidv4()
+    // const id = uuidv4()
 
     console.log("The body is: ", req.body)
-    console.log("The id is: ", id)
+    // console.log("The id is: ", id)
     try{
-        const todo = await Todo.create({ ...req.body, id })
+        const todo = await Todo.create({ ...req.body })
 
         return res.json({ todo: todo }).status(201)
     } catch (e) {
