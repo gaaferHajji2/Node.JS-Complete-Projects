@@ -30,10 +30,10 @@ process.on('uncaughtException', (error) => {
   
 });
 
-app.listen(3000, (error) => {
+app.listen(process.env.PORT, (error) => {
     if(error){
         throw error;
     }
 
-    console.log("Server listen on port 3000");
+    console.log("Server listen on port: " + process.env.PORT);
 })
