@@ -1,24 +1,37 @@
-import express, {Request, Response} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { Todo } from "../models";
 
-const router = express.Router()
+import ToDoValidator from "../validation/todo";
+import { validationResult } from "express-validator/";
 
-router.post('/create', async function(req: Request, res: Response) {
+const router = express.Router();
 
-    // const id = uuidv4()
+router.post(
+  "/create",
+  ToDoValidator.validateCreateTodo(),
+  (req: Request, res: Response, next: NextFunction) => {
+    const error = validationResult(req)
 
-    console.log("The body is: ", req.body)
-    // console.log("The id is: ", id)
-    try{
-        const todo = await Todo.create({ ...req.body })
-
-        return res.json({ todo: todo }).status(201)
-    } catch (e) {
-        return res.json({ err: e }).status(500)
+    if(!error.isEmpty()) {
+        return res.json({ error }).status(400);
     }
 
-    
+    next()
 
-})
+  },
+  async function (req: Request, res: Response) {
+    // const id = uuidv4()
+
+    console.log("The body is: ", req.body);
+    // console.log("The id is: ", id)
+    try {
+      const todo = await Todo.create({ ...req.body });
+
+      return res.json({ todo: todo }).status(201);
+    } catch (e) {
+      return res.json({ err: e }).status(500);
+    }
+  }
+);
 
 export default router;
