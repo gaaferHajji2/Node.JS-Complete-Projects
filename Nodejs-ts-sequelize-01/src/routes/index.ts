@@ -39,7 +39,7 @@ router.get('/get-all-todos',
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
 
-    if(!errors.isEmpty) {
+    if(!errors.isEmpty()) {
       return res.json({ errors }).status(400)
     }
 
