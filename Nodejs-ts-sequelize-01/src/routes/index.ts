@@ -34,4 +34,18 @@ router.post(
   }
 );
 
+router.get('/get-all-todos', async (req: Request, res: Response) => {
+
+  try {
+    let todos = await Todo.findAll()
+
+    return res.json({
+      res: todos
+    })
+  } catch (e) {
+    return res.json({ err: e }).status(500);
+  }
+
+});
+
 export default router;
