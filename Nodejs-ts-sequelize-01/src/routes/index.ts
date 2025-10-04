@@ -59,4 +59,25 @@ router.get('/get-all-todos',
 
 });
 
+router.get(
+  "/todo/:id", 
+  ToDoValidator.validateIdParam(),
+  CheckErrors.checkAllErrors,
+  async (req: Request, res: Response) => {
+
+  try {
+    let todo = await Todo.findByPk(req.params['id'])
+
+    if(todo == undefined) {
+      return res.status(404).json({ msg : "Check your id" })
+    }
+
+    return res.json(todo)
+
+  } catch (e) {
+    return res.json({ err: e }).status(500);
+  }
+
+});
+
 export default router;

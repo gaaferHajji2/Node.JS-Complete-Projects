@@ -1,4 +1,5 @@
-import { body, query } from 'express-validator/';
+import { body, param, query } from 'express-validator/';
+import { NotEmpty } from 'sequelize-typescript';
 
 
 class TodoValidator {
@@ -14,6 +15,12 @@ class TodoValidator {
         return [
             query('limit').optional().isInt({ min: 1, max: 100}).withMessage('limit must be number and between 1 && 100'),
             query('page').optional().isInt({ min: 1 }).withMessage('page must be number and between 1 && 100')
+        ]
+    }
+
+    validateIdParam() {
+        return [
+            param('id').notEmpty().withMessage('id is Required').isUUID(4).withMessage('id must be valid UUIDV4'),
         ]
     }
 }
