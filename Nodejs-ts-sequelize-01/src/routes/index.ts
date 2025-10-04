@@ -37,7 +37,28 @@ router.post(
 router.get('/get-all-todos', async (req: Request, res: Response) => {
 
   try {
-    let todos = await Todo.findAll()
+
+    let { limit, page } = req.query
+
+    let size, offset
+
+    if (limit == undefined) {
+      size = 3;
+    } else {
+      size = parseInt(limit.toString())
+    }
+
+    if(page == undefined) {
+      offset = 0
+    } else {
+      offset = (parseInt(page.toString()) - 1) * size;
+    }
+
+
+    let todos = await Todo.findAll({
+      limit: size,
+      offset: offset
+    })
 
     return res.json({
       res: todos
