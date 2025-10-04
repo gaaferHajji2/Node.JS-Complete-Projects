@@ -12,8 +12,8 @@ class TodoValidator {
 
     validatePaginationQuery() {
         return [
-            query('limit').optional().isInt({ min: 1, max: 100}).withMessage('limit must be number'),
-            query('page').optional().isInt({ min: 1, max: 100}).withMessage('page must be number')
+            query('limit').optional().isInt({ min: 1, max: 100}).withMessage('limit must be number and between 1 && 100'),
+            query('page').optional().isInt({ min: 1, max: 100}).withMessage('page must be number and between 1 && 100')
         ]
     }
 }
