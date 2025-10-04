@@ -4,8 +4,8 @@ import TodoRouter from './routes'
 
 import db from "./config/database.config";
 
-db.sync().then(() => {
-    console.log("Connected to db ok!!")
+db.authenticate().then(() => {
+    console.log("Connect to db OK")
 })
 
 let app = express()
