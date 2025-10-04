@@ -45,7 +45,7 @@ router.get('/get-all-todos',
       offset = (parseInt(page.toString()) - 1) * size;
     }
 
-    let todos = await Todo.findAll({
+    let todos = await Todo.findAndCountAll({
       limit: size,
       offset: offset
     })
