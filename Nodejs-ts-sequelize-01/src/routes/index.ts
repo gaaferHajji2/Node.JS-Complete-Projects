@@ -34,14 +34,23 @@ router.post(
   }
 );
 
-router.get('/get-all-todos', async (req: Request, res: Response) => {
+router.get('/get-all-todos', 
+  ToDoValidator.validatePaginationQuery(),
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty) {
+      return res.json({ errors }).status(400)
+    }
+
+    next()
+  },
+  async (req: Request, res: Response) => {
 
   try {
 
     let { limit, page } = req.query
-
     let size, offset
-
     if (limit == undefined) {
       size = 3;
     } else {
@@ -53,7 +62,6 @@ router.get('/get-all-todos', async (req: Request, res: Response) => {
     } else {
       offset = (parseInt(page.toString()) - 1) * size;
     }
-
 
     let todos = await Todo.findAll({
       limit: size,
