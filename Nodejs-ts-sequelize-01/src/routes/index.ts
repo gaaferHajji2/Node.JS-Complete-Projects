@@ -2,23 +2,13 @@ import express, { NextFunction, Request, Response } from "express";
 import { Todo } from "../models";
 
 import ToDoValidator from "../validation/todo";
-import { validationResult } from "express-validator/";
-
+import CheckErrors from "../middleware"
 const router = express.Router();
 
 router.post(
   "/create",
   ToDoValidator.validateCreateTodo(),
-  (req: Request, res: Response, next: NextFunction) => {
-    const error = validationResult(req)
-
-    if(!error.isEmpty()) {
-        return res.json({ error }).status(400);
-    }
-
-    next()
-
-  },
+  CheckErrors.checkAllErrors,
   async function (req: Request, res: Response) {
     // const id = uuidv4()
 
@@ -36,15 +26,7 @@ router.post(
 
 router.get('/get-all-todos', 
   ToDoValidator.validatePaginationQuery(),
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req)
-
-    if(!errors.isEmpty()) {
-      return res.json({ errors }).status(400)
-    }
-
-    next()
-  },
+  CheckErrors.checkAllErrors,
   async (req: Request, res: Response) => {
 
   try {
