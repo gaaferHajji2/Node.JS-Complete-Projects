@@ -1,6 +1,4 @@
 import { body, param, query } from 'express-validator/';
-import { NotEmpty } from 'sequelize-typescript';
-
 
 class TodoValidator {
     validateTodoReq() {
