@@ -84,22 +84,42 @@ router.put(
   ToDoValidator.validateTodoReq(),
   CheckErrors.checkAllErrors,
   async (req: Request, res: Response) => {
-
-    let t1 = await Todo.update({
-      title: req.body['title'],
-      completed: req.body['completed']
-    }, {
-      where: {
-        id: req.params['id']
+    let t1 = await Todo.update(
+      {
+        title: req.body["title"],
+        completed: req.body["completed"],
+      },
+      {
+        where: {
+          id: req.params["id"],
+        },
       }
-    });
+    );
 
-    if(t1[0] == 0) {
-      return res.status(400).json({ msg: "No data found to update" })
+    if (t1[0] == 0) {
+      return res.status(400).json({ msg: "No data found to update" });
     }
 
-    return res.json(t1)
+    return res.json(t1);
+  }
+);
 
+router.delete(
+  "/delete-todo/:id",
+  ToDoValidator.validateIdParam(),
+  CheckErrors.checkAllErrors,
+  async (req: Request, res: Response) => {
+    let t1 = await Todo.destroy({
+      where: {
+        id: req.params['id'],
+      },
+    });
+
+    if (t1 == 0) {
+      return res.status(400).json({ msg: "No data found" })
+    }
+
+    return res.status(204).json({});
   }
 );
 
