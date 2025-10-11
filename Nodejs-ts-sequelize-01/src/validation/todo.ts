@@ -3,7 +3,7 @@ import { NotEmpty } from 'sequelize-typescript';
 
 
 class TodoValidator {
-    validateCreateTodo() {
+    validateTodoReq() {
         return [
             body('title').notEmpty().withMessage('title is required'),
             body('title').isLength({ min: 2, max: 255 }).withMessage('title length must be between 2 and 255'),
