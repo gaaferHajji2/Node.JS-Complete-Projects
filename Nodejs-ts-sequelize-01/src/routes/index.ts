@@ -17,9 +17,9 @@ router.post(
     try {
       const todo = await Todo.create({ ...req.body });
 
-      return res.json({ todo: todo }).status(201);
+      return res.status(201).json({ todo: todo });
     } catch (e) {
-      return res.json({ err: e }).status(500);
+      return res.status(500).json({ err: e });
     }
   }
 );
@@ -54,7 +54,7 @@ router.get('/get-all-todos',
       res: todos
     })
   } catch (e) {
-    return res.json({ err: e }).status(500);
+    return res.status(500).json({ err: e });
   }
 
 });
@@ -75,7 +75,7 @@ router.get(
     return res.json(todo)
 
   } catch (e) {
-    return res.json({ err: e }).status(500);
+    return res.status(500).json({ err: e });
   }
 
 });

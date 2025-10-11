@@ -7,7 +7,7 @@ class CheckErrors{
         const errors = validationResult(req)
         
             if(!errors.isEmpty()) {
-              return res.json({ errors }).status(400)
+              return res.status(400).json({ errors })
             }
         
             next()
