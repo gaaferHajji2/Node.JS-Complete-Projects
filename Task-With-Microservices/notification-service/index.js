@@ -1,24 +1,46 @@
 import express from 'express'
+import amqp from 'amqplib'
+import dotenv from 'dotenv'
 
+dotenv.config()
+
+let channel, connection;
 let app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
-let main = async () => {
-    await mongoose.connect(process.env.MONGO_URL)
-    console.log(`Connect to Mongodb successfully`)
+async function start() {
+    try {
+        connection = await amqp.connect(process.env.RABBITMQ_URL)
+        channel = await connection.createChannel()
+        await channel.assertQueue("task_created")
+        console.log("Connection To RabbitMQ Successfully")
+        channel.consume("task_created", (msg) => {
+            const taskData = JSON.parse(msg.content.toString())
+            console.log("The task data is: ", taskData)
+            channel.ack(msg)
+        })
+    } catch (e) {
+        console.error("Error In RabbitMQ Connection: " + e)
+        throw new Error("RabbitMQ Connection Failed")
+    }
 }
-main().catch((err) => console.log(`Error in connecting to MongoDB`, err))
+
+start().then(() => { }).catch(e => {
+    console.error("Error In Connection to RABBITMQ: " + process.env.RABBITMQ_URL)
+    process.exit(1)
+})
 
 app.get("/health", (req, res) => {
     return res.json({
         hello: "hello task route"
     })
 })
-let PORT = process.env.PORT || 3001
+
+let PORT = process.env.PORT || 3002
+console.log("PORT is: " + process.env.PORT)
+
 app.listen(PORT, (err) => {
-    if(err) {
-        console.log("Error in creating server: ", error)
+    if (err) {
+        console.log("Error in creating server: ", err)
     }
     console.log(`Server running on: http://localhost:${PORT}/`)
 })
