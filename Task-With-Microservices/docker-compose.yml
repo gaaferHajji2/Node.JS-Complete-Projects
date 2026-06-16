@@ -22,9 +22,30 @@ services:
       retries: 5
       start_period: 10s
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: jloka-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"      # AMQP protocol port
+      - "15672:15672"    # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - jloka-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   user-service:
     build:
-      context: ./user-service  # Path to your user service directory
+      context: ./user-service
       dockerfile: Dockerfile
     container_name: jloka-user-service
     restart: unless-stopped
@@ -32,8 +53,11 @@ services:
       - "3000:3000"
     environment:
       MONGO_URL: mongodb://mongodb:27017/jloka-users-db
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
     depends_on:
       mongodb:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - jloka-network
@@ -46,7 +70,7 @@ services:
 
   task-service:
     build:
-      context: ./task-service  # Path to your user service directory
+      context: ./task-service
       dockerfile: Dockerfile
     container_name: jloka-task-service
     restart: unless-stopped
@@ -54,29 +78,11 @@ services:
       - "3001:3001"
     environment:
       MONGO_URL: mongodb://mongodb:27017/jloka-users-db
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
     depends_on:
       mongodb:
         condition: service_healthy
-    networks:
-      - jloka-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-  notification-service:
-    build:
-      context: ./notification-service  # Path to your user service directory
-      dockerfile: Dockerfile
-    container_name: jloka-notification-service
-    restart: unless-stopped
-    ports:
-      - "3002:3002"
-    environment:
-      MONGO_URL: mongodb://mongodb:27017/jloka-users-db
-    depends_on:
-      mongodb:
+      rabbitmq:
         condition: service_healthy
     networks:
       - jloka-network
@@ -87,6 +93,30 @@ services:
       retries: 3
       start_period: 10s
 
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: jloka-notification-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      MONGO_URL: mongodb://mongodb:27017/jloka-users-db
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - jloka-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   jloka-network:
@@ -96,4 +126,6 @@ volumes:
   mongodb_data:
     driver: local
   mongodb_config:
+    driver: local
+  rabbitmq_data:
     driver: local
