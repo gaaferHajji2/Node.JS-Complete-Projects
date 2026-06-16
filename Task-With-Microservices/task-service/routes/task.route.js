@@ -18,7 +18,7 @@ async function connectToRabbitMQ(retries = 3) {
 
             return { connection, channel }
         } catch (e) {
-            console.error("Error In RabbitMQ Connection: " + e.message)
+            console.error("Error In RabbitMQ Connection: " + e)
             retries -= 1
             if(retries<=0){
                 throw new Error("RabbitMQ Connection Failed")
@@ -50,7 +50,15 @@ router.post('/', createTaskValidation, handleValidationErrors, async (req, res) 
 
     let message = { taskId: newTask._id, user_id, title }
 
-    res.status(201).json({
+    if(!channel) {
+      return res.status(503).json({
+        msg: "RabbitMQ channel not worked",
+      })
+    }
+
+    channel.sendToQueue("task_created", Buffer.from(JSON.stringify(message)))
+
+    return res.status(201).json({
       success: true,
       data: newTask,
     })
