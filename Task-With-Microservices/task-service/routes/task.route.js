@@ -48,7 +48,7 @@ router.post('/', createTaskValidation, handleValidationErrors, async (req, res) 
       user_id,
     })
 
-    let message = { taskId: newTask._id, user_id, title }
+    let message = { taskId: newTask._id, user_id, name }
 
     if(!channel) {
       return res.status(503).json({
