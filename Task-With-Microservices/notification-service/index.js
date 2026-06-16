@@ -1,6 +1,6 @@
 import express from 'express'
 
-app = express()
+let app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
