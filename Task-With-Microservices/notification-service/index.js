@@ -11,12 +11,17 @@ async function start() {
     try {
         connection = await amqp.connect(process.env.RABBITMQ_URL)
         channel = await connection.createChannel()
-        await channel.assertQueue("task_created")
+        // Assert a durable queue
+        await channel.assertQueue("task_created", {
+            durable: true  // This ensures messages persist
+        })
         console.log("Connection To RabbitMQ Successfully")
         channel.consume("task_created", (msg) => {
             const taskData = JSON.parse(msg.content.toString())
             console.log("The task data is: ", taskData)
             channel.ack(msg)
+        }, {
+            noAck: false  // Explicitly set to false for manual acknowledgment
         })
     } catch (e) {
         console.error("Error In RabbitMQ Connection: " + e)
