@@ -12,9 +12,11 @@ async function start() {
         connection = await amqp.connect(process.env.RABBITMQ_URL)
         channel = await connection.createChannel()
         // Assert a durable queue
-        await channel.assertQueue("task_created", {
-            durable: true  // This ensures messages persist
+        const queueInfo = await channel.assertQueue("task_created", {
+            durable: true
         })
+        
+        console.log(`Queue has ${queueInfo.messageCount} messages waiting`)
         console.log("Connection To RabbitMQ Successfully")
         channel.consume("task_created", (msg) => {
             const taskData = JSON.parse(msg.content.toString())
