@@ -59,7 +59,7 @@ router.post('/', createTaskValidation, handleValidationErrors, async (req, res) 
       })
     }
 
-    channel.sendToQueue("task_created", Buffer.from(JSON.stringify(message)))
+    channel.sendToQueue("task_created", Buffer.from(JSON.stringify(message)), { persistent: true })
 
     return res.status(201).json({
       success: true,
