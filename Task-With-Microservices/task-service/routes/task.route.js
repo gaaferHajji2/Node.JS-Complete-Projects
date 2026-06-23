@@ -9,25 +9,28 @@ const router = Router()
 let channel, connection;
 
 async function connectToRabbitMQ(retries = 3) {
-    while(retries){
-        try {
-            connection = await amqp.connect(process.env.RABBITMQ_URL)
-            channel = await connection.createChannel()
-            await channel.assertQueue("task_created")
-            console.log("Connection To RabbitMQ Successfully")
+  while (retries) {
+    try {
+      connection = await amqp.connect(process.env.RABBITMQ_URL)
+      channel = await connection.createChannel()
+      await channel.assertQueue("task_created", {
+        durable: true  // This ensures messages persist
+      })
 
-            return { connection, channel }
-        } catch (e) {
-            console.error("Error In RabbitMQ Connection: " + e)
-            retries -= 1
-            if(retries<=0){
-                throw new Error("RabbitMQ Connection Failed")
-            }
-        }
+      console.log("Connection To RabbitMQ Successfully")
+
+      return { connection, channel }
+    } catch (e) {
+      console.error("Error In RabbitMQ Connection: " + e)
+      retries -= 1
+      if (retries <= 0) {
+        throw new Error("RabbitMQ Connection Failed")
+      }
     }
+  }
 }
 
-connectToRabbitMQ().then(()=> {}).catch(e => process.exit(1))
+connectToRabbitMQ().then(() => { }).catch(e => process.exit(1))
 
 router.post('/', createTaskValidation, handleValidationErrors, async (req, res) => {
   try {
@@ -36,7 +39,7 @@ router.post('/', createTaskValidation, handleValidationErrors, async (req, res) 
     let response = await fetch(`http://user-service:3000/api/users/${user_id}/exists`)
     let tempUser = await response.json()
 
-    if(response.status != 200 || tempUser.exists == null) {
+    if (response.status != 200 || tempUser.exists == null) {
       return res.status(400).json({
         'msg': 'Please check the UserId',
       })
@@ -50,7 +53,7 @@ router.post('/', createTaskValidation, handleValidationErrors, async (req, res) 
 
     let message = { taskId: newTask._id, user_id, name }
 
-    if(!channel) {
+    if (!channel) {
       return res.status(503).json({
         msg: "RabbitMQ channel not worked",
       })
