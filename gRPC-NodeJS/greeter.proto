@@ -4,6 +4,7 @@ package greeter;
 
 service Greeter {
     rpc SayHello(HelloRequest) returns (HelloResponse);
+    rpc GetNumbers(NumberRequest) returns (stream NumberRespose);
 }
 
 message HelloRequest {
