@@ -20,7 +20,7 @@ function main() {
   let call = client.GetNumbers({ count: 5 })
   
   call.on('data', (response) => {
-    console.log("The data is: ", count)
+    console.log("The data is: ", response)
   })
 
   call.on('end', () => {
