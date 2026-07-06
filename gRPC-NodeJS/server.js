@@ -12,7 +12,7 @@ function sayHello(call, callback) {
 }
 
 function getNumbers(call) {
-  const count = call.request.numbers
+  const count = call.request.count
   let current = 1
   const interval = setInterval(()=> {
     if(current > count){
