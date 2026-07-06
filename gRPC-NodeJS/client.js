@@ -7,15 +7,15 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH)
 const proto = grpc.loadPackageDefinition(packageDefinition).greeter
 
 function main() {
-    const client = new proto.Greeter('localhost:5050', grpc.credentials.createInsecure())
-    client.SayHello({ name: 'Jafar Loka' }, (error, response) => {
-        if(error) {
-            console.error("Error In Getting Response From Server: ", error)
-            return;
-        }
+  const client = new proto.Greeter('localhost:5050', grpc.credentials.createInsecure())
+  client.SayHello({ name: 'Jafar Loka' }, (error, response) => {
+    if(error) {
+      console.error("Error In Getting Response From Server: ", error)
+      return;
+    }
 
-        console.log(`The Response From The Server is: ${response.message}`)
-    })
+    console.log(`The Response From The Server is: ${response.message}`)
+  })
 }
 
 main()
