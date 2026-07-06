@@ -21,7 +21,7 @@ function getNumbers(call) {
       return;
     }
     call.write({ order: current, number: current * 100})
-    ++current
+    current += 1;
   }, 1000)
 }
 
